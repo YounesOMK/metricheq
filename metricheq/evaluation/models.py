@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, Optional, Union
+from typing import Callable, List, Optional, Union
 
 from pydantic import BaseModel
 
@@ -7,18 +7,12 @@ from pydantic import BaseModel
 class Metric(BaseModel):
     value: Optional[Union[int, float, bool]]
 
-    def satisfies(self, criterion: "Criterion") -> bool:
+    def satisfies(self, criterion: Callable[["Metric"], bool]) -> bool:
         if self.value is None:
             return False
-        return criterion.is_satisfied_by(self)
+        return criterion(self)
 
-    def satisfies_all(self, criteria: List["Criterion"]) -> bool:
+    def satisfies_all(self, criteria: List[Callable[["Metric"], bool]]) -> bool:
         if self.value is None:
             return False
-        return all(self.satisfies(criterion) for criterion in criteria)
-
-
-class Criterion(ABC):
-    @abstractmethod
-    def is_satisfied_by(self, metric: Metric) -> bool:
-        pass
+        return all(criterion(self) for criterion in criteria)
