@@ -18,7 +18,7 @@ class SonarMeasuresParams(BaseModel):
     metric_key: SonarMetricType
 
 
-class SonarMeasuresFetcher(Extractor):
+class SonarMeasuresExtractor(Extractor):
     def __init__(self, connector: Connector, params: dict):
         if not isinstance(connector, SonarConnector):
             raise TypeError("The provided connector is not a valid sonar connector")
@@ -26,7 +26,7 @@ class SonarMeasuresFetcher(Extractor):
         super().__init__(connector, params)
 
     def friendly_name(self):
-        return "SonarQube Measures Fetcher"
+        return "Get SonarQube Measures"
 
     def fetch_data(self):
         endpoint = f"/api/measures/component?component={self.params_model.component}&metricKeys={self.params_model.metric_key}"
