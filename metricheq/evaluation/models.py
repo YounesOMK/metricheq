@@ -7,16 +7,10 @@ from pydantic import BaseModel
 class Metric(BaseModel):
     value: Optional[Union[int, float, bool]]
 
-    def satisfies(self, criterion) -> bool:
+    def satisfies(self, criterion: "Criterion") -> bool:
         if self.value is None:
             return False
-
-        if callable(criterion):
-            return criterion(self.value)
-        elif isinstance(criterion, Criterion):
-            return criterion.is_satisfied_by(self)
-        else:
-            raise ValueError("Criterion must be a callable or an instance of Criterion")
+        return criterion.is_satisfied_by(self)
 
     def satisfies_all(self, criteria: List["Criterion"]) -> bool:
         if self.value is None:
