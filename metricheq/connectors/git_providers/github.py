@@ -8,6 +8,7 @@ class GitHubConnectorConfig(BaseModel):
     api_key: str
     base_url: str = "https://api.github.com"
 
+
 class GitHubClient(Client):
     def __init__(self, config: GitHubConnectorConfig):
         super().__init__(config)
@@ -23,6 +24,7 @@ class GitHubClient(Client):
         response.raise_for_status()
         return response
 
+
 class GitHubConnector(Connector):
     def __init__(self, client):
         super().__init__(client)
@@ -33,6 +35,6 @@ class GitHubConnector(Connector):
 
     def ensure_connectivity(self):
         try:
-            self.client.make_request('/')
+            self.client.make_request("/")
         except requests.RequestException as e:
             raise ConnectionError("Failed to connect to GitHub") from e

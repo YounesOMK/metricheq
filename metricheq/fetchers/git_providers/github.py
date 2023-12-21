@@ -1,5 +1,4 @@
 from datetime import datetime, timezone
-import requests
 from metricheq.fetchers.git_providers.base import (
     GitProviderFileExistsFetcher,
     GitProviderLastCommitFreshnessFetcher,

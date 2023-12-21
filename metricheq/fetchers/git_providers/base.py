@@ -29,7 +29,6 @@ class GitProviderFileExistsFetcher(Fetcher):
         return "existence of file in git repository"
 
 
-
 class GitProviderLastWorkFlowDurationFetcher(Fetcher):
     def __init__(self, connector: Connector, params: dict):
         self.params_model = GitProviderLastWorkflowDurationParams(**params)

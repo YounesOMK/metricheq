@@ -16,6 +16,7 @@ class ApiTokenAuthenticator(Authenticator):
         request.headers["Authorization"] = f"Bearer {self.token}"
         return request
 
+
 class BasicAuthenticator(Authenticator):
     def __init__(self, username, password) -> None:
         self.username = username
@@ -31,7 +32,7 @@ class BasicAuthenticator(Authenticator):
 class Client(ABC):
     def __init__(self, config) -> None:
         self.config = config
-    
+
     @abstractmethod
     def make_request(self, endpoint: str, method: str = "GET", **kwargs):
         pass
