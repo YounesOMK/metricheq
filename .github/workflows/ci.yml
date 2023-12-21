@@ -32,7 +32,10 @@ jobs:
     - name: Lint with ruff
       run: |
         ruff check .
-    
+
+    - name: Install missing type stubs for mypy
+      run: mypy --install-types --non-interactive
+      
     - name: Type check with mypy
       run: mypy .
 
