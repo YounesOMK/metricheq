@@ -28,15 +28,15 @@ jobs:
 
     - name: Format with ruff
       run: |
-        ruff format .
+        poetry run ruff format .
 
     - name: Lint with ruff
       run: |
-        ruff check .
+        poetry run ruff check .
 
     - name: Type check with mypy
-      run: poetry mypy .
+      run: poetry run mypy .
 
     - name: Test with unittest
       run: |
-        python -m unittest  -v
+        poetry run python -m unittest  -v
