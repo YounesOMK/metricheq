@@ -17,6 +17,7 @@ class GitProviderLastWorkflowDurationParams(BaseModel):
 class GitProviderLastCommitFreshnessParams(BaseModel):
     repo_name: str
     branch_name: str
+    format: DurationFormat = DurationFormat.SECONDS
 
 
 class GitProviderFileExistsFetcher(Fetcher):

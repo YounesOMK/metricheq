@@ -4,7 +4,7 @@ from metricheq.fetchers.git_providers.base import (
     GitProviderLastCommitFreshnessFetcher,
     GitProviderLastWorkFlowDurationFetcher,
 )
-from metricheq.fetchers.utils import DurationFormat
+from metricheq.fetchers.utils import DurationFormat, convert_seconds
 
 
 class GitHubFileExistsFetcher(GitProviderFileExistsFetcher):
@@ -41,14 +41,7 @@ class GitHubLastWorkFlowDurationFetcher(GitProviderLastWorkFlowDurationFetcher):
             response.raise_for_status()
 
     def finalize(self, duration_in_seconds: float):
-        if self.params_model.format == DurationFormat.SECONDS:
-            return duration_in_seconds
-        elif self.params_model.format == DurationFormat.MINUTES:
-            return duration_in_seconds / 60
-        elif self.params_model.format == DurationFormat.HOURS:
-            return duration_in_seconds / 3600
-        else:
-            raise ValueError("Invalid duration format")
+        return convert_seconds(duration_in_seconds, self.params_model.format)
 
 
 class GitHubLastCommitFreshnessFetcher(GitProviderLastCommitFreshnessFetcher):
@@ -62,11 +55,12 @@ class GitHubLastCommitFreshnessFetcher(GitProviderLastCommitFreshnessFetcher):
             commit_time_str = commit_data["commit"]["committer"]["date"]
             commit_time_str = commit_time_str.replace("Z", "+00:00")
             commit_time = datetime.fromisoformat(commit_time_str)
-            return commit_time
+            time_elapsed_in_seconds = (
+                datetime.now(timezone.utc) - commit_time
+            ).total_seconds()
+            return time_elapsed_in_seconds
         else:
             response.raise_for_status()
 
-    def finalize(self, commit_time: datetime):
-        current_time = datetime.now(timezone.utc)
-        time_elapsed = current_time - commit_time
-        return time_elapsed.total_seconds()
+    def finalize(self, time_elapsed_in_seconds):
+        return convert_seconds(time_elapsed_in_seconds, self.params_model.format)
