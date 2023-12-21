@@ -34,6 +34,9 @@ jobs:
       run: |
         poetry run ruff check .
 
+    - name: Install missing type stubs for mypy using Poetry
+      run: poetry run mypy --install-types --non-interactive
+    
     - name: Type check with mypy
       run: poetry run mypy .
 
