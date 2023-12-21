@@ -1,18 +1,18 @@
 from pydantic import BaseModel
 import requests
 
-from metricheq.connectors.base import ApiTokenAuthenticator, Client, Connector
+from metricheq.connectors.base import BearerTokenAuthenticator, Client, Connector
 
 
-class GitHubConnectorConfig(BaseModel):
+class GitHubConfig(BaseModel):
     api_key: str
     base_url: str = "https://api.github.com"
 
 
 class GitHubClient(Client):
-    def __init__(self, config: GitHubConnectorConfig):
+    def __init__(self, config: GitHubConfig):
         super().__init__(config)
-        self.authenticator = ApiTokenAuthenticator(config.api_key)
+        self.authenticator = BearerTokenAuthenticator(config.api_key)
         self.base_url = config.base_url
 
     def make_request(self, endpoint: str, method: str = "GET", **kwargs):

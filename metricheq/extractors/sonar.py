@@ -1,8 +1,9 @@
 from enum import Enum
 from pydantic import BaseModel
 from metricheq.connectors.base import Connector
+from metricheq.connectors.sonar import SonarConnector
 
-from metricheq.fetchers.base import Fetcher
+from metricheq.extractors.base import Extractor
 
 
 class SonarMetricType(str, Enum):
@@ -17,8 +18,10 @@ class SonarMeasuresParams(BaseModel):
     metric_key: SonarMetricType
 
 
-class SonarMeasuresFetcher(Fetcher):
+class SonarMeasuresFetcher(Extractor):
     def __init__(self, connector: Connector, params: dict):
+        if not isinstance(connector, SonarConnector):
+            raise TypeError("The provided connector is not a valid sonar connector")
         self.params_model = SonarMeasuresParams(**params)
         super().__init__(connector, params)
 

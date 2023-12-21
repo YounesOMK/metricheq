@@ -1,13 +1,13 @@
 from datetime import datetime, timezone
-from metricheq.fetchers.git_providers.base import (
-    GitProviderFileExistsFetcher,
-    GitProviderLastCommitFreshnessFetcher,
-    GitProviderLastWorkFlowDurationFetcher,
+from metricheq.extractors.git_providers.base import (
+    GitProviderFileExistsExtractor,
+    GitProviderLastCommitFreshnessExtractor,
+    GitProviderLastWorkFlowDurationExtractor,
 )
-from metricheq.fetchers.utils import DurationFormat, convert_seconds
+from metricheq.extractors.utils import convert_seconds
 
 
-class GitHubFileExistsFetcher(GitProviderFileExistsFetcher):
+class GitHubFileExistsExtractor(GitProviderFileExistsExtractor):
     def fetch_data(self):
         endpoint = f"/repos/{self.params_model.repo_name}/contents/{self.params_model.file_path}"
         return self.client.make_request(endpoint)
@@ -19,7 +19,7 @@ class GitHubFileExistsFetcher(GitProviderFileExistsFetcher):
         return file_exists
 
 
-class GitHubLastWorkFlowDurationFetcher(GitProviderLastWorkFlowDurationFetcher):
+class GitHubLastWorkFlowDurationExtractor(GitProviderLastWorkFlowDurationExtractor):
     def fetch_data(self):
         endpoint = f"/repos/{self.params_model.repo_name}/actions/runs"
         return self.client.make_request(endpoint)
@@ -44,7 +44,7 @@ class GitHubLastWorkFlowDurationFetcher(GitProviderLastWorkFlowDurationFetcher):
         return convert_seconds(duration_in_seconds, self.params_model.format)
 
 
-class GitHubLastCommitFreshnessFetcher(GitProviderLastCommitFreshnessFetcher):
+class GitHubLastCommitFreshnessExtractor(GitProviderLastCommitFreshnessExtractor):
     def fetch_data(self):
         endpoint = f"/repos/{self.params_model.repo_name}/commits/{self.params_model.branch_name}"
         return self.client.make_request(endpoint)

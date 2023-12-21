@@ -8,7 +8,7 @@ class Authenticator(ABC):
         pass
 
 
-class ApiTokenAuthenticator(Authenticator):
+class BearerTokenAuthenticator(Authenticator):
     def __init__(self, token) -> None:
         self.token = token
 
@@ -17,7 +17,7 @@ class ApiTokenAuthenticator(Authenticator):
         return request
 
 
-class BasicAuthenticator(Authenticator):
+class UserPasswordBasicAuthenticator(Authenticator):
     def __init__(self, username, password) -> None:
         self.username = username
         self.password = password

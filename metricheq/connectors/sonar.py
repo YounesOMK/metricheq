@@ -1,24 +1,24 @@
 from typing import Optional
 import requests
 from metricheq.connectors.base import (
-    ApiTokenAuthenticator,
-    BasicAuthenticator,
+    BearerTokenAuthenticator,
+    UserPasswordBasicAuthenticator,
     Client,
     Connector,
 )
 from pydantic import BaseModel
 
 
-class SonarConnectorBaseConfig(BaseModel):
+class SonarBaseConfig(BaseModel):
     host_url: str
     proxy: Optional[str] = None
 
 
-class SonarConnectorApiTokenConfig(SonarConnectorBaseConfig):
+class SonarTokenConfig(SonarBaseConfig):
     user_token: str
 
 
-class SonarConnectorBasicConfig(SonarConnectorBaseConfig):
+class SonarUserPasswordConfig(SonarBaseConfig):
     username: str
     password: str
 
@@ -28,10 +28,12 @@ class SonarClient(Client):
         self.base_url = config.host_url
         self.proxy = config.proxy
 
-        if isinstance(config, SonarConnectorApiTokenConfig):
-            self.authenticator = ApiTokenAuthenticator(config.user_token)
-        if isinstance(config, SonarConnectorBasicConfig):
-            self.authenticator = BasicAuthenticator(config.username, config.password)
+        if isinstance(config, SonarTokenConfig):
+            self.authenticator = BearerTokenAuthenticator(config.user_token)
+        if isinstance(config, SonarUserPasswordConfig):
+            self.authenticator = UserPasswordBasicAuthenticator(
+                config.username, config.password
+            )
             self.base_url = config.host_url
         else:
             return TypeError("Unsupported configuration type.")

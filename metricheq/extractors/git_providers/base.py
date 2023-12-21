@@ -1,6 +1,7 @@
 from pydantic import BaseModel
-from metricheq.fetchers.base import Fetcher
-from metricheq.fetchers.utils import DurationFormat
+from metricheq.connectors.git_providers.github import GitHubConnector
+from metricheq.extractors.base import Extractor
+from metricheq.extractors.utils import DurationFormat
 from metricheq.connectors.base import Connector
 
 
@@ -20,8 +21,11 @@ class GitProviderLastCommitFreshnessParams(BaseModel):
     format: DurationFormat = DurationFormat.SECONDS
 
 
-class GitProviderFileExistsFetcher(Fetcher):
+class GitProviderFileExistsExtractor(Extractor):
     def __init__(self, connector: Connector, params: dict):
+        if not isinstance(connector, GitHubConnector):
+            raise TypeError("The provided connector is not a valid github connector")
+
         self.params_model = GitProviderFileExistsParams(**params)
         super().__init__(connector, params)
 
@@ -30,8 +34,10 @@ class GitProviderFileExistsFetcher(Fetcher):
         return "existence of file in git repository"
 
 
-class GitProviderLastWorkFlowDurationFetcher(Fetcher):
+class GitProviderLastWorkFlowDurationExtractor(Extractor):
     def __init__(self, connector: Connector, params: dict):
+        if not isinstance(connector, GitHubConnector):
+            raise TypeError("The provided connector is not a valid github connector")
         self.params_model = GitProviderLastWorkflowDurationParams(**params)
         super().__init__(connector, params)
 
@@ -40,8 +46,10 @@ class GitProviderLastWorkFlowDurationFetcher(Fetcher):
         return "last Git workflow duration"
 
 
-class GitProviderLastCommitFreshnessFetcher(Fetcher):
+class GitProviderLastCommitFreshnessExtractor(Extractor):
     def __init__(self, connector: Connector, params: dict):
+        if not isinstance(connector, GitHubConnector):
+            raise TypeError("The provided connector is not a valid github connector")
         self.params_model = GitProviderLastCommitFreshnessParams(**params)
         super().__init__(connector, params)
 
