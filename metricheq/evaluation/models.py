@@ -1,4 +1,3 @@
-from abc import ABC, abstractmethod
 from typing import Callable, List, Optional, Union
 
 from pydantic import BaseModel

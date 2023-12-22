@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
 from metricheq.connectors.sonar import SonarConnector
 from metricheq.extractors.sonar import SonarMeasuresExtractor, SonarMetricType
