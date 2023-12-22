@@ -8,7 +8,7 @@ class DurationFormat(str, Enum):
     DAYS = "days"
 
 
-def convert_seconds(duration_in_seconds, format: DurationFormat):
+def convert_to_seconds(duration_in_seconds, format: DurationFormat):
     if format == DurationFormat.SECONDS:
         return duration_in_seconds
     elif format == DurationFormat.MINUTES:
