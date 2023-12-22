@@ -25,9 +25,6 @@ class SonarMeasuresExtractor(Extractor):
         self.params_model = SonarMeasuresParams(**params)
         super().__init__(connector, params)
 
-    def friendly_name(self):
-        return "Get SonarQube Measures"
-
     def fetch_data(self):
         endpoint = f"/api/measures/component?component={self.params_model.component}&metricKeys={self.params_model.metric_key}"
         return self.client.make_request(endpoint)

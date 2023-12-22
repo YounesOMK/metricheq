@@ -10,10 +10,6 @@ class Extractor(ABC):
         self.params = params
 
     @abstractmethod
-    def friendly_name(self):
-        pass
-
-    @abstractmethod
     def fetch_data(self):
         pass
 
@@ -30,6 +26,3 @@ class Extractor(ABC):
         data = self.fetch_data()
         processed_data = self.process_data(data)
         return self.finalize(processed_data)
-
-    def __str__(self):
-        return self.friendly_name

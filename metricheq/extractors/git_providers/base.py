@@ -29,10 +29,6 @@ class GitProviderFileExistsExtractor(Extractor):
         self.params_model = GitProviderFileExistsParams(**params)
         super().__init__(connector, params)
 
-    @property
-    def friendly_name(self):
-        return "existence of file in git repository"
-
 
 class GitProviderLastWorkFlowDurationExtractor(Extractor):
     def __init__(self, connector: Connector, params: dict):
@@ -41,10 +37,6 @@ class GitProviderLastWorkFlowDurationExtractor(Extractor):
         self.params_model = GitProviderLastWorkflowDurationParams(**params)
         super().__init__(connector, params)
 
-    @property
-    def friendly_name(self):
-        return "last Git workflow duration"
-
 
 class GitProviderLastCommitFreshnessExtractor(Extractor):
     def __init__(self, connector: Connector, params: dict):
@@ -52,7 +44,3 @@ class GitProviderLastCommitFreshnessExtractor(Extractor):
             raise TypeError("The provided connector is not a valid github connector")
         self.params_model = GitProviderLastCommitFreshnessParams(**params)
         super().__init__(connector, params)
-
-    @property
-    def friendly_name(self):
-        return "freshness of last Git commit"
