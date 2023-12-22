@@ -8,6 +8,8 @@ from metricheq.connectors.base import (
 )
 from pydantic import BaseModel
 
+from metricheq.exceptions.exceptions import UnsupportedConfigurationError
+
 
 class SonarBaseConfig(BaseModel):
     host_url: str
@@ -25,18 +27,18 @@ class SonarUserPasswordConfig(SonarBaseConfig):
 
 class SonarClient(Client):
     def __init__(self, config):
-        self.base_url = config.host_url
-        self.proxy = config.proxy
-
         if isinstance(config, SonarTokenConfig):
             self.authenticator = BearerTokenAuthenticator(config.user_token)
-        if isinstance(config, SonarUserPasswordConfig):
+        elif isinstance(config, SonarUserPasswordConfig):
             self.authenticator = UserPasswordBasicAuthenticator(
                 config.username, config.password
             )
             self.base_url = config.host_url
         else:
-            return TypeError("Unsupported configuration type.")
+            raise UnsupportedConfigurationError("Unsupported configuration type.")
+
+        self.base_url = config.host_url
+        self.proxy = config.proxy
 
     def make_request(self, endpoint: str, method: str = "GET", **kwargs):
         url = f"{self.base_url}{endpoint}"

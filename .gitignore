@@ -162,6 +162,7 @@ cython_debug/
 
 
 test.py
+etest.py
 sonar-project.properties
 wget-log
 .scannerwork
