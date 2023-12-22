@@ -4,25 +4,37 @@ from metricheq.evaluation.metric import Metric
 
 
 class TestMetric(unittest.TestCase):
+    @staticmethod
+    def criterion_greater_than_five(m):
+        return m.value > 5
+
+    @staticmethod
+    def criterion_less_than_four(m):
+        return m.value < 4
+
+    @staticmethod
+    def criterion_is_true(m):
+        return m.value is True
+
+    @staticmethod
+    def criterion_is_not_none(m):
+        return m.value is not None
+
     def test_satisfies_with_int(self):
         metric = Metric(value=10)
-        criterion = lambda m: m.value > 5
-        self.assertTrue(metric.satisfies(criterion))
+        self.assertTrue(metric.satisfies(self.criterion_greater_than_five))
 
     def test_satisfies_with_float(self):
         metric = Metric(value=3.14)
-        criterion = lambda m: m.value < 4
-        self.assertTrue(metric.satisfies(criterion))
+        self.assertTrue(metric.satisfies(self.criterion_less_than_four))
 
     def test_satisfies_with_bool(self):
         metric = Metric(value=True)
-        criterion = lambda m: m.value is True
-        self.assertTrue(metric.satisfies(criterion))
+        self.assertTrue(metric.satisfies(self.criterion_is_true))
 
     def test_satisfies_with_none(self):
         metric = Metric(value=None)
-        criterion = lambda m: m.value is not None
-        self.assertFalse(metric.satisfies(criterion))
+        self.assertFalse(metric.satisfies(self.criterion_is_not_none))
 
     def test_satisfies_all_with_multiple_criteria(self):
         metric = Metric(value=7)
