@@ -27,10 +27,13 @@ class SonarMeasuresExtractor(Extractor):
 
     def fetch_data(self):
         endpoint = f"/api/measures/component?component={self.params_model.component}&metricKeys={self.params_model.metric_key}"
-        return self.client.make_request(endpoint)
+        response = self.client.make_request(endpoint)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            response.raise_for_status()
 
-    def process_data(self, response):
-        data = response.json()
+    def process_data(self, data):
         measures = data.get("component", {}).get("measures", [])
         for measure in measures:
             if measure["metric"] == self.params_model.metric_key:

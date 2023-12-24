@@ -22,23 +22,25 @@ class GitHubFileExistsExtractor(GitProviderFileExistsExtractor):
 class GitHubLastWorkFlowDurationExtractor(GitProviderLastWorkFlowDurationExtractor):
     def fetch_data(self):
         endpoint = f"/repos/{self.params_model.repo_name}/actions/runs"
-        return self.client.make_request(endpoint)
-
-    def process_data(self, response):
+        response = self.client.make_request(endpoint)
         if response.status_code == 200:
             runs = response.json().get("workflow_runs", [])
-            if runs:
-                latest_run = runs[0]
-                start_time_str = latest_run["run_started_at"].replace("Z", "+00:00")
-                end_time_str = latest_run["updated_at"].replace("Z", "+00:00")
-
-                start_time = datetime.fromisoformat(start_time_str)
-                end_time = datetime.fromisoformat(end_time_str)
-
-                return (end_time - start_time).total_seconds()
-            return None
+            return runs
         else:
             response.raise_for_status()
+
+    def process_data(self, data):
+        runs = data
+        if runs:
+            latest_run = runs[0]
+            start_time_str = latest_run["run_started_at"].replace("Z", "+00:00")
+            end_time_str = latest_run["updated_at"].replace("Z", "+00:00")
+
+            start_time = datetime.fromisoformat(start_time_str)
+            end_time = datetime.fromisoformat(end_time_str)
+
+            return (end_time - start_time).total_seconds()
+        return None
 
     def finalize(self, duration_in_seconds: float):
         return convert_to_seconds(duration_in_seconds, self.params_model.format)
@@ -47,20 +49,22 @@ class GitHubLastWorkFlowDurationExtractor(GitProviderLastWorkFlowDurationExtract
 class GitHubLastCommitFreshnessExtractor(GitProviderLastCommitFreshnessExtractor):
     def fetch_data(self):
         endpoint = f"/repos/{self.params_model.repo_name}/commits/{self.params_model.branch_name}"
-        return self.client.make_request(endpoint)
-
-    def process_data(self, response):
+        response = self.client.make_request(endpoint)
         if response.status_code == 200:
             commit_data = response.json()
-            commit_time_str = commit_data["commit"]["committer"]["date"]
-            commit_time_str = commit_time_str.replace("Z", "+00:00")
-            commit_time = datetime.fromisoformat(commit_time_str)
-            time_elapsed_in_seconds = (
-                datetime.now(timezone.utc) - commit_time
-            ).total_seconds()
-            return time_elapsed_in_seconds
+            return commit_data
         else:
             response.raise_for_status()
+
+    def process_data(self, data):
+        commit_data = data
+        commit_time_str = commit_data["commit"]["committer"]["date"]
+        commit_time_str = commit_time_str.replace("Z", "+00:00")
+        commit_time = datetime.fromisoformat(commit_time_str)
+        time_elapsed_in_seconds = (
+            datetime.now(timezone.utc) - commit_time
+        ).total_seconds()
+        return time_elapsed_in_seconds
 
     def finalize(self, time_elapsed_in_seconds):
         return convert_to_seconds(time_elapsed_in_seconds, self.params_model.format)

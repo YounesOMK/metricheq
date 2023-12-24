@@ -47,7 +47,6 @@ class SonarClient(Client):
         prepared_request = self.authenticator.apply(request)
         with requests.Session() as session:
             response = session.send(prepared_request.prepare(), proxies=proxies)
-        response.raise_for_status()
         return response
 
 
