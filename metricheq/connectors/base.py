@@ -17,6 +17,15 @@ class BearerTokenAuthenticator(Authenticator):
         return request
 
 
+class TokenAuthenticator(Authenticator):
+    def __init__(self, token) -> None:
+        self.token = token
+
+    def apply(self, request):
+        request.headers["Authorization"] = f"Token {self.token}"
+        return request
+
+
 class UserPasswordBasicAuthenticator(Authenticator):
     def __init__(self, username, password) -> None:
         self.username = username
