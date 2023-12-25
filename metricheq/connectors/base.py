@@ -22,7 +22,7 @@ class TokenAuthenticator(Authenticator):
         self.token = token
 
     def apply(self, request):
-        request.headers["Authorization"] = f"Token {self.token}"
+        request.headers["Authorization"] = f"Token token={self.token}"
         return request
 
 
