@@ -29,8 +29,8 @@ class PrometheusClient(Client):
                 config.username, config.password
             )
 
-    def make_request(self, query: str, method: str = "GET", **kwargs):
-        full_url = f"{self.base_url}/api/v1/{query}"
+    def make_request(self, endpoint: str, method: str = "GET", **kwargs):
+        full_url = f"{self.base_url}/api/v1/{endpoint}"
         request = requests.Request(method, full_url, **kwargs)
 
         if self.authenticator:
