@@ -4,7 +4,7 @@ from metricheq.extractors.git_providers.base import (
     GitProviderLastCommitFreshnessExtractor,
     GitProviderLastWorkFlowDurationExtractor,
 )
-from metricheq.extractors.utils import convert_to_seconds
+from metricheq.extractors.utils import convert_seconds
 
 
 class GitHubFileExistsExtractor(GitProviderFileExistsExtractor):
@@ -43,7 +43,7 @@ class GitHubLastWorkFlowDurationExtractor(GitProviderLastWorkFlowDurationExtract
         return None
 
     def finalize(self, duration_in_seconds: float):
-        return convert_to_seconds(duration_in_seconds, self.params_model.format)
+        return convert_seconds(duration_in_seconds, self.params_model.format)
 
 
 class GitHubLastCommitFreshnessExtractor(GitProviderLastCommitFreshnessExtractor):
@@ -67,4 +67,4 @@ class GitHubLastCommitFreshnessExtractor(GitProviderLastCommitFreshnessExtractor
         return time_elapsed_in_seconds
 
     def finalize(self, time_elapsed_in_seconds):
-        return convert_to_seconds(time_elapsed_in_seconds, self.params_model.format)
+        return convert_seconds(time_elapsed_in_seconds, self.params_model.format)

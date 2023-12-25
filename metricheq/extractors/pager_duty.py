@@ -7,7 +7,7 @@ from metricheq.connectors.base import Connector
 from metricheq.connectors.pager_duty import PagerDutyConnector
 
 from metricheq.extractors.base import Extractor
-from metricheq.extractors.utils import DurationFormat, convert_to_seconds
+from metricheq.extractors.utils import DurationFormat, convert_seconds
 
 
 class IncidentUrgencyEnum(str, Enum):
@@ -93,5 +93,5 @@ class PagerDutyAverageIncidentResolutionTimeExtractor(Extractor):
 
     def finalize(self, processed_data):
         if processed_data is not None:
-            return convert_to_seconds(processed_data, format=self.params_model.format)
+            return convert_seconds(processed_data, format=self.params_model.format)
         return None
