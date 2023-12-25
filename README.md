@@ -2,7 +2,7 @@
 [![codecov](https://codecov.io/gh/YounesOMK/metricheq/graph/badge.svg?token=UCFOOO5F69)](https://codecov.io/gh/YounesOMK/metricheq)
 [![ci](https://github.com/YounesOMK/metricheq/actions/workflows/ci.yml/badge.svg)](https://github.com/YounesOMK/metricheq/actions/workflows/ci.yml)
 
-This project currently offers two types of connectors: Sonar, GitHub.
+This project currently offers two types of connectors: Sonar, GitHub, PagerDuty
 
 **Sonar Connector Example**
 
