@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Optional
 from pydantic import BaseModel
@@ -7,7 +7,12 @@ from metricheq.connectors.base import Connector
 from metricheq.connectors.pager_duty import PagerDutyConnector
 
 from metricheq.extractors.base import Extractor
-from metricheq.extractors.utils import DurationFormat, convert_seconds
+from metricheq.extractors.utils import (
+    DurationFormat,
+    FrequencyTimeUnit,
+    calculate_frequency,
+    convert_seconds,
+)
 
 
 class IncidentUrgencyEnum(str, Enum):
@@ -33,10 +38,19 @@ class PagerDutyAverageIncidentResolutionTimeParams(BaseModel):
 
     service_id: str
     incident_urgency: IncidentUrgencyEnum
-    format: DurationFormat = DurationFormat.SECONDS
-
     since: Optional[datetime] = None
     until: Optional[datetime] = None
+
+    format: DurationFormat = DurationFormat.SECONDS
+
+
+class PagerDutyIncidentFrequencyParams(BaseModel):
+    service_id: str
+    incident_urgency: Optional[IncidentUrgencyEnum] = None
+    since: Optional[datetime] = None
+    until: Optional[datetime] = None
+
+    time_unit: FrequencyTimeUnit = FrequencyTimeUnit.DAILY
 
 
 class PagerDutyAverageIncidentResolutionTimeExtractor(Extractor):
@@ -95,3 +109,64 @@ class PagerDutyAverageIncidentResolutionTimeExtractor(Extractor):
         if processed_data is not None:
             return convert_seconds(processed_data, format=self.params_model.format)
         return None
+
+
+class PagerDutyIncidentFrequencyExtractor(Extractor):
+    """
+    Extractor class for calculating the frequency of incidents reported in PagerDuty.
+
+    This class extends the Extractor base class and implements methods to fetch, process,
+    and finalize data related to incident frequency. It calculates how often incidents occur
+    over a given time frame, based on the specified frequency time unit (daily, weekly, monthly).
+
+    Attributes:
+        connector (Connector): A connector instance for making API requests to PagerDuty.
+        params_model (PagerDutyIncidentFrequencyParams): Parameters for incident frequency extraction.
+
+    Methods:
+        fetch_data: Retrieves incident data from PagerDuty.
+        process_data: Processes the fetched data to count the number of incidents.
+        finalize: Finalizes the data processing to calculate the incident frequency.
+    """
+
+    def __init__(self, connector: Connector, params: dict):
+        if not isinstance(connector, PagerDutyConnector):
+            raise TypeError("The provided connector is not a valid PagerDuty connector")
+        self.params_model = PagerDutyIncidentFrequencyParams(**params)
+        super().__init__(connector, params)
+
+    def fetch_data(self):
+        endpoint = f"/incidents?service_ids[]={self.params_model.service_id}"
+
+        if self.params_model.incident_urgency:
+            endpoint += f"&urgencies[]={self.params_model.incident_urgency.value}"
+
+        if self.params_model.since:
+            endpoint += f"&since={self.params_model.since.isoformat()}"
+
+        if self.params_model.until:
+            endpoint += f"&until={self.params_model.until.isoformat()}"
+
+        response = self.client.make_request(endpoint)
+
+        if response.status_code == 200:
+            return response.json()
+        else:
+            response.raise_for_status()
+
+    def process_data(self, data):
+        incidents = data.get("incidents", [])
+        return len(incidents)
+
+    def finalize(self, processed_data):
+        total_incidents = processed_data
+        default_since = datetime.min.replace(tzinfo=timezone.utc)
+        default_until = datetime.now(timezone.utc)
+
+        since = self.params_model.since or default_since
+        until = self.params_model.until or default_until
+
+        time_delta = until - since
+        return calculate_frequency(
+            total_incidents, time_delta, self.params_model.time_unit
+        )
