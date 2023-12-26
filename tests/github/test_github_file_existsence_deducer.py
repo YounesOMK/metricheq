@@ -39,7 +39,7 @@ class TestGitHubFileExistenceDeducer(unittest.TestCase):
     @patch(
         "metricheq.deducers.git_providers.github.GitHubFileExistenceDeducer.process_data"
     )
-    def test_perform(self, mock_process_data):
+    def test_deduce(self, mock_process_data):
         mock_process_data.return_value = True
         mock_response = Mock()
         mock_response.status_code = 200
