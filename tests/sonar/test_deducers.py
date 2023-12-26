@@ -2,14 +2,14 @@ import unittest
 from unittest.mock import Mock
 
 from metricheq.connectors.sonar import SonarClient, SonarConnector
-from metricheq.extractors.sonar import (
-    SonarMeasuresExtractor,
-    SonarMeasuresParams,
+from metricheq.deducers.sonar import (
+    SonarMeasureDeducer,
+    SonarMeasureParams,
     SonarMetricType,
 )
 
 
-class TestSonarMeasuresExtractor(unittest.TestCase):
+class TestSonarMeasureDeducer(unittest.TestCase):
     def setUp(self):
         self.mock_client = Mock(spec=SonarClient)
         self.mock_connector = Mock(spec=SonarConnector, client=self.mock_client)
@@ -18,9 +18,9 @@ class TestSonarMeasuresExtractor(unittest.TestCase):
             "component": "example_component",
             "metric_key": SonarMetricType.COVERAGE,
         }
-        self.params_model = SonarMeasuresParams(**self.params)
+        self.params_model = SonarMeasureParams(**self.params)
 
-        self.extractor = SonarMeasuresExtractor(self.mock_connector, self.params)
+        self.extractor = SonarMeasureDeducer(self.mock_connector, self.params)
 
     def test_fetch_data_successful(self):
         mock_response = Mock()
@@ -30,7 +30,7 @@ class TestSonarMeasuresExtractor(unittest.TestCase):
         }
         self.mock_client.make_request.return_value = mock_response
 
-        result = self.extractor.fetch_data()
+        result = self.extractor.retrieve_data()
         if result is None:
             self.fail("fetch_data returned None")
         else:
@@ -43,7 +43,7 @@ class TestSonarMeasuresExtractor(unittest.TestCase):
         self.mock_client.make_request.return_value = mock_response
 
         with self.assertRaises(Exception):
-            self.extractor.fetch_data()
+            self.extractor.retrieve_data()
 
     def test_process_data(self):
         mock_data = {

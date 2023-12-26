@@ -7,7 +7,7 @@ from requests import HTTPError
 from metricheq.connectors.pager_duty import PagerDutyConnector
 from metricheq.extractors.pager_duty import (
     IncidentUrgencyEnum,
-    PagerDutyIncidentFrequencyExtractor,
+    PagerDutyIncidentFrequencyDeducer,
 )
 from metricheq.extractors.utils import FrequencyTimeUnit
 
@@ -25,14 +25,14 @@ class TestPagerDutyIncidentFrequencyExtractor(unittest.TestCase):
             "time_unit": FrequencyTimeUnit.DAILY,
         }
 
-        self.extractor = PagerDutyIncidentFrequencyExtractor(
+        self.extractor = PagerDutyIncidentFrequencyDeducer(
             self.mock_connector, self.params
         )
 
     def test_init_with_invalid_connector(self):
         with self.assertRaises(TypeError):
             invalid_connector = Mock()
-            PagerDutyIncidentFrequencyExtractor(invalid_connector, self.params)
+            PagerDutyIncidentFrequencyDeducer(invalid_connector, self.params)
 
     def test_fetch_data_successful(self):
         mock_response = Mock()
@@ -40,7 +40,7 @@ class TestPagerDutyIncidentFrequencyExtractor(unittest.TestCase):
         mock_response.json.return_value = {"incidents": [{"id": "1"}, {"id": "2"}]}
         self.mock_client.make_request.return_value = mock_response
 
-        result = self.extractor.fetch_data()
+        result = self.extractor.retrieve_data()
         self.assertIsNotNone(result)
         if result is not None:
             self.assertIn("incidents", result)
@@ -53,7 +53,7 @@ class TestPagerDutyIncidentFrequencyExtractor(unittest.TestCase):
         self.mock_client.make_request.return_value = mock_response
 
         with self.assertRaises(HTTPError):
-            self.extractor.fetch_data()
+            self.extractor.retrieve_data()
 
     def test_process_data(self):
         mock_data = {"incidents": [{"id": "1"}, {"id": "2"}]}

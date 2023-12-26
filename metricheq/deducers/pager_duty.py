@@ -6,7 +6,7 @@ from dateutil.parser import parse
 from metricheq.connectors.base import Connector
 from metricheq.connectors.pager_duty import PagerDutyConnector
 
-from metricheq.extractors.base import Extractor
+from metricheq.extractors.base import Deducer
 from metricheq.extractors.utils import (
     DurationFormat,
     FrequencyTimeUnit,
@@ -26,7 +26,7 @@ class IncidentUrgencyEnum(str, Enum):
 
 class PagerDutyAverageIncidentResolutionTimeParams(BaseModel):
     """
-    Parameter model for configuring the PagerDutyAverageIncidentResolutionTimeExtractor.
+    Parameter model for configuring the PagerDutyAverageIncidentResolutionTimeDeducer.
 
     Attributes:
         service_id (str): The ID of the PagerDuty service to query.
@@ -53,11 +53,11 @@ class PagerDutyIncidentFrequencyParams(BaseModel):
     time_unit: FrequencyTimeUnit = FrequencyTimeUnit.DAILY
 
 
-class PagerDutyAverageIncidentResolutionTimeExtractor(Extractor):
+class PagerDutyAverageIncidentResolutionTimeDeducer(Deducer):
     """
-    Extractor for calculating the average time to resolution of incidents in PagerDuty.
+    Deducer for calculating the average time to resolution of incidents in PagerDuty.
 
-    This extractor fetches incident data from PagerDuty and calculates the average time taken from when incidents are reported until they are resolved.
+    This deducer fetches incident data from PagerDuty and calculates the average time taken from when incidents are reported until they are resolved.
 
     Attributes:
         connector (Connector): A connector instance for making API requests to PagerDuty.
@@ -72,7 +72,7 @@ class PagerDutyAverageIncidentResolutionTimeExtractor(Extractor):
         self.params_model = PagerDutyAverageIncidentResolutionTimeParams(**params)
         super().__init__(connector, params)
 
-    def fetch_data(self):
+    def retrieve_data(self):
         endpoint = f"/incidents?service_ids[]={self.params_model.service_id}&urgencies[]={self.params_model.incident_urgency.value}"
 
         if self.params_model.since:
@@ -111,11 +111,11 @@ class PagerDutyAverageIncidentResolutionTimeExtractor(Extractor):
         return None
 
 
-class PagerDutyIncidentFrequencyExtractor(Extractor):
+class PagerDutyIncidentFrequencyDeducer(Deducer):
     """
-    Extractor class for calculating the frequency of incidents reported in PagerDuty.
+    Deducer class for calculating the frequency of incidents reported in PagerDuty.
 
-    This class extends the Extractor base class and implements methods to fetch, process,
+    This class extends the Deducer base class and implements methods to fetch, process,
     and finalize data related to incident frequency. It calculates how often incidents occur
     over a given time frame, based on the specified frequency time unit (daily, weekly, monthly).
 
@@ -135,7 +135,7 @@ class PagerDutyIncidentFrequencyExtractor(Extractor):
         self.params_model = PagerDutyIncidentFrequencyParams(**params)
         super().__init__(connector, params)
 
-    def fetch_data(self):
+    def retrieve_data(self):
         endpoint = f"/incidents?service_ids[]={self.params_model.service_id}"
 
         if self.params_model.incident_urgency:

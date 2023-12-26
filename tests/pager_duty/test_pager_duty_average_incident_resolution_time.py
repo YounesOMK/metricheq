@@ -4,14 +4,14 @@ from unittest.mock import Mock, patch
 from requests import HTTPError
 
 from metricheq.connectors.pager_duty import PagerDutyConnector
-from metricheq.extractors.pager_duty import (
-    PagerDutyAverageIncidentResolutionTimeExtractor,
+from metricheq.deducers.pager_duty import (
+    PagerDutyAverageIncidentResolutionTimeDeducer,
     PagerDutyAverageIncidentResolutionTimeParams,
 )
-from metricheq.extractors.utils import DurationFormat
+from metricheq.deducers.utils import DurationFormat
 
 
-class TestPagerDutyAverageIncidentResolutionTimeExtractor(unittest.TestCase):
+class TestPagerDutyAverageIncidentResolutionTimeDeducer(unittest.TestCase):
     def setUp(self):
         self.mock_client = Mock()
         self.mock_connector = Mock(spec=PagerDutyConnector, client=self.mock_client)
@@ -25,14 +25,14 @@ class TestPagerDutyAverageIncidentResolutionTimeExtractor(unittest.TestCase):
         }
         self.params_model = PagerDutyAverageIncidentResolutionTimeParams(**self.params)
 
-        self.extractor = PagerDutyAverageIncidentResolutionTimeExtractor(
+        self.extractor = PagerDutyAverageIncidentResolutionTimeDeducer(
             self.mock_connector, self.params
         )
 
     def test_init_with_invalid_connector(self):
         with self.assertRaises(TypeError):
             invalid_connector = Mock()
-            PagerDutyAverageIncidentResolutionTimeExtractor(
+            PagerDutyAverageIncidentResolutionTimeDeducer(
                 invalid_connector, self.params
             )
 
@@ -70,7 +70,7 @@ class TestPagerDutyAverageIncidentResolutionTimeExtractor(unittest.TestCase):
         }
         self.mock_client.make_request.return_value = mock_response
 
-        result = self.extractor.fetch_data()
+        result = self.extractor.retrieve_data()
         self.assertIsNotNone(result)
         if result is not None:
             self.assertIn("incidents", result)
@@ -83,7 +83,7 @@ class TestPagerDutyAverageIncidentResolutionTimeExtractor(unittest.TestCase):
         self.mock_client.make_request.return_value = mock_response
 
         with self.assertRaises(HTTPError):
-            self.extractor.fetch_data()
+            self.extractor.retrieve_data()
 
     def test_finalize(self):
         test_duration_in_seconds = 3600

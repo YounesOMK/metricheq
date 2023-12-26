@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from metricheq.connectors.base import Connector
 from metricheq.connectors.sonar import SonarConnector
 
-from metricheq.extractors.base import Extractor
+from metricheq.deducers.base import Deducer
 
 
 class SonarMetricType(str, Enum):
@@ -13,19 +13,19 @@ class SonarMetricType(str, Enum):
     CODE_SMELLS = "code_smells"
 
 
-class SonarMeasuresParams(BaseModel):
+class SonarMeasureParams(BaseModel):
     component: str
     metric_key: SonarMetricType
 
 
-class SonarMeasuresExtractor(Extractor):
+class SonarMeasureDeducer(Deducer):
     def __init__(self, connector: Connector, params: dict):
         if not isinstance(connector, SonarConnector):
             raise TypeError("The provided connector is not a valid sonar connector")
-        self.params_model = SonarMeasuresParams(**params)
+        self.params_model = SonarMeasureParams(**params)
         super().__init__(connector, params)
 
-    def fetch_data(self):
+    def retrieve_data(self):
         endpoint = f"/api/measures/component?component={self.params_model.component}&metricKeys={self.params_model.metric_key}"
         response = self.client.make_request(endpoint)
         if response.status_code == 200:

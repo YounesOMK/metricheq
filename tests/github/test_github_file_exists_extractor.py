@@ -2,21 +2,21 @@ import unittest
 from unittest.mock import Mock, patch
 from metricheq.connectors.git_providers.github import GitHubConnector
 
-from metricheq.extractors.git_providers.github import (
-    GitHubFileExistsExtractor,
+from metricheq.deducers.git_providers.github import (
+    GitHubFileExistenceDeducer,
 )
 
 
-class TestGitHubFileExistsExtractor(unittest.TestCase):
+class TestGitHubFileExistenceDeducer(unittest.TestCase):
     def setUp(self):
         self.mock_connector = Mock(spec=GitHubConnector)
         self.mock_client = Mock()
         self.mock_connector.client = self.mock_client
         self.params = {"repo_name": "test_repo", "file_path": "test_file.py"}
-        self.extractor = GitHubFileExistsExtractor(self.mock_connector, self.params)
+        self.extractor = GitHubFileExistenceDeducer(self.mock_connector, self.params)
 
     def test_fetch_data(self):
-        self.extractor.fetch_data()
+        self.extractor.retrieve_data()
         expected_endpoint = "/repos/test_repo/contents/test_file.py"
         self.mock_client.make_request.assert_called_with(expected_endpoint)
 
@@ -44,11 +44,11 @@ class TestGitHubFileExistsExtractor(unittest.TestCase):
         mock_response = Mock()
         mock_response.status_code = 200
         self.mock_client.make_request.return_value = mock_response
-        result = self.extractor.perform()
+        result = self.extractor.deduce()
         self.assertTrue(result)
 
         mock_process_data.return_value = False
         mock_response.status_code = 404
         self.mock_client.make_request.return_value = mock_response
-        result = self.extractor.perform()
+        result = self.extractor.deduce()
         self.assertFalse(result)

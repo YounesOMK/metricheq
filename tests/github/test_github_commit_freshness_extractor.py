@@ -3,12 +3,12 @@ import unittest
 from unittest.mock import Mock
 
 from metricheq.connectors.git_providers.github import GitHubClient, GitHubConnector
-from metricheq.extractors.git_providers.base import GitProviderLastCommitFreshnessParams
-from metricheq.extractors.git_providers.github import GitHubLastCommitFreshnessExtractor
-from metricheq.extractors.utils import DurationFormat
+from metricheq.deducers.git_providers.base import GitProviderLastCommitFreshnessParams
+from metricheq.deducers.git_providers.github import GitHubLastCommitAgeDeducer
+from metricheq.deducers.utils import DurationFormat
 
 
-class TestGitHubLastCommitFreshnessExtractor(unittest.TestCase):
+class TestGitHubLastCommitAgeDeducer(unittest.TestCase):
     def setUp(self):
         self.mock_client = Mock(spec=GitHubClient)
         self.mock_connector = Mock(spec=GitHubConnector, client=self.mock_client)
@@ -20,9 +20,7 @@ class TestGitHubLastCommitFreshnessExtractor(unittest.TestCase):
         }
         self.params_model = GitProviderLastCommitFreshnessParams(**self.params)
 
-        self.extractor = GitHubLastCommitFreshnessExtractor(
-            self.mock_connector, self.params
-        )
+        self.extractor = GitHubLastCommitAgeDeducer(self.mock_connector, self.params)
 
     def test_fetch_data_successful(self):
         mock_response = Mock()
@@ -32,7 +30,7 @@ class TestGitHubLastCommitFreshnessExtractor(unittest.TestCase):
         }
         self.mock_client.make_request.return_value = mock_response
 
-        result = self.extractor.fetch_data()
+        result = self.extractor.retrieve_data()
         # TODO CHECK this later
         if result is not None:
             self.assertIn("commit", result)
@@ -46,7 +44,7 @@ class TestGitHubLastCommitFreshnessExtractor(unittest.TestCase):
         self.mock_client.make_request.return_value = mock_response
 
         with self.assertRaises(Exception):
-            self.extractor.fetch_data()
+            self.extractor.retrieve_data()
 
     def test_process_data(self):
         commit_time_str = (

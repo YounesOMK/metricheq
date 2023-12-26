@@ -6,16 +6,16 @@ from requests import Response
 from requests import HTTPError
 
 from metricheq.connectors.git_providers.github import GitHubClient, GitHubConnector
-from metricheq.extractors.git_providers.base import (
+from metricheq.deducers.git_providers.base import (
     GitProviderLastWorkflowDurationParams,
 )
-from metricheq.extractors.git_providers.github import (
-    GitHubLastWorkFlowDurationExtractor,
+from metricheq.deducers.git_providers.github import (
+    GitHubLastWorkFlowDurationDeducer,
 )
-from metricheq.extractors.utils import DurationFormat
+from metricheq.deducers.utils import DurationFormat
 
 
-class TestGitHubLastWorkFlowDurationExtractor(unittest.TestCase):
+class TestGitHubLastWorkFlowDurationDeducer(unittest.TestCase):
     def setUp(self):
         self.mock_client = Mock(spec=GitHubClient)
         self.mock_connector = Mock(spec=GitHubConnector, client=self.mock_client)
@@ -23,7 +23,7 @@ class TestGitHubLastWorkFlowDurationExtractor(unittest.TestCase):
         self.params = {"repo_name": "test_repo", "format": DurationFormat.MINUTES}
         self.params_model = GitProviderLastWorkflowDurationParams(**self.params)
 
-        self.extractor = GitHubLastWorkFlowDurationExtractor(
+        self.extractor = GitHubLastWorkFlowDurationDeducer(
             self.mock_connector, self.params
         )
 
@@ -40,7 +40,7 @@ class TestGitHubLastWorkFlowDurationExtractor(unittest.TestCase):
         }
         self.mock_client.make_request.return_value = mock_response
 
-        result = self.extractor.fetch_data()
+        result = self.extractor.retrieve_data()
         if result is not None:
             self.assertEqual(len(result), 1)
             self.assertIn("run_started_at", result[0])
@@ -55,7 +55,7 @@ class TestGitHubLastWorkFlowDurationExtractor(unittest.TestCase):
         self.mock_client.make_request.return_value = mock_response
 
         with self.assertRaises(HTTPError):
-            self.extractor.fetch_data()
+            self.extractor.retrieve_data()
 
     def test_process_data(self):
         mock_data = [

@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from metricheq.connectors.git_providers.github import GitHubConnector
-from metricheq.extractors.base import Extractor
+from metricheq.extractors.base import Deducer
 from metricheq.extractors.utils import DurationFormat
 from metricheq.connectors.base import Connector
 
@@ -21,7 +21,7 @@ class GitProviderLastCommitFreshnessParams(BaseModel):
     format: DurationFormat = DurationFormat.SECONDS
 
 
-class GitProviderFileExistsExtractor(Extractor):
+class GitProviderFileExistenceDeducer(Deducer):
     def __init__(self, connector: Connector, params: dict):
         if not isinstance(connector, GitHubConnector):
             raise TypeError("The provided connector is not a valid github connector")
@@ -30,7 +30,7 @@ class GitProviderFileExistsExtractor(Extractor):
         super().__init__(connector, params)
 
 
-class GitProviderLastWorkFlowDurationExtractor(Extractor):
+class GitProviderLastWorkFlowDurationDeducer(Deducer):
     def __init__(self, connector: Connector, params: dict):
         if not isinstance(connector, GitHubConnector):
             raise TypeError("The provided connector is not a valid github connector")
@@ -38,7 +38,7 @@ class GitProviderLastWorkFlowDurationExtractor(Extractor):
         super().__init__(connector, params)
 
 
-class GitProviderLastCommitFreshnessExtractor(Extractor):
+class GitProviderLastCommitAgeDeducer(Deducer):
     def __init__(self, connector: Connector, params: dict):
         if not isinstance(connector, GitHubConnector):
             raise TypeError("The provided connector is not a valid github connector")
