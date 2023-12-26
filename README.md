@@ -4,7 +4,15 @@
 
 This project currently offers 4 connectors:
 
-- [Sonar](https://www.sonarqube.org/)
-- [GitHub](https://github.com/)
-- [PagerDuty](https://www.pagerduty.com/)
-- [Prometheus](https://prometheus.io/)
+| Connector  | Deducer                                         | Description                                       |
+|------------|-------------------------------------------------|---------------------------------------------------|
+| Sonar      | SonarMeasureDeducer                             | Deduces metrics for coverage, bugs, vulnerabilities, code smells |
+| GitHub     | GitHubFileExistenceDeducer                      | Determines if a file exists in the repo           |
+|            | GitHubLastWorkFlowDurationDeducer               | Calculates duration of the last workflow          |
+|            | GitHubLastCommitAgeDeducer                      | Measures time since the last commit               |
+| PagerDuty  | PagerDutyIncidentFrequencyDeducer               | Deducer for frequency of incidents                |
+|            | PagerDutyAverageIncidentResolutionTimeDeducer   | Calculates average resolution time of incidents   |
+| Prometheus | WIP                                             | WIP                                               |
+
+
+
