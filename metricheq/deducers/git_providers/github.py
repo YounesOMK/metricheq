@@ -1,14 +1,14 @@
 from datetime import datetime, timezone
-from metricheq.extractors.git_providers.base import (
-    GitProviderFileExistsExtractor,
-    GitProviderLastCommitFreshnessExtractor,
-    GitProviderLastWorkFlowDurationExtractor,
+from metricheq.deducers.git_providers.base import (
+    GitProviderFileExistenceDeducer,
+    GitProviderLastCommitAgeDeducer,
+    GitProviderLastWorkFlowDurationDeducer,
 )
-from metricheq.extractors.utils import convert_seconds
+from metricheq.deducers.utils import convert_seconds
 
 
-class GitHubFileExistsExtractor(GitProviderFileExistsExtractor):
-    def fetch_data(self):
+class GitHubFileExistenceDeducer(GitProviderFileExistenceDeducer):
+    def retrieve_data(self):
         endpoint = f"/repos/{self.params_model.repo_name}/contents/{self.params_model.file_path}"
         return self.client.make_request(endpoint)
 
@@ -19,8 +19,8 @@ class GitHubFileExistsExtractor(GitProviderFileExistsExtractor):
         return file_exists
 
 
-class GitHubLastWorkFlowDurationExtractor(GitProviderLastWorkFlowDurationExtractor):
-    def fetch_data(self):
+class GitHubLastWorkFlowDurationDeducer(GitProviderLastWorkFlowDurationDeducer):
+    def retrieve_data(self):
         endpoint = f"/repos/{self.params_model.repo_name}/actions/runs"
         response = self.client.make_request(endpoint)
         if response.status_code == 200:
@@ -46,8 +46,8 @@ class GitHubLastWorkFlowDurationExtractor(GitProviderLastWorkFlowDurationExtract
         return convert_seconds(duration_in_seconds, self.params_model.format)
 
 
-class GitHubLastCommitFreshnessExtractor(GitProviderLastCommitFreshnessExtractor):
-    def fetch_data(self):
+class GitHubLastCommitAgeDeducer(GitProviderLastCommitAgeDeducer):
+    def retrieve_data(self):
         endpoint = f"/repos/{self.params_model.repo_name}/commits/{self.params_model.branch_name}"
         response = self.client.make_request(endpoint)
         if response.status_code == 200:

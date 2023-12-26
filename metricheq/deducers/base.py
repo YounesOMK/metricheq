@@ -1,16 +1,17 @@
 from abc import ABC, abstractmethod
 
 from metricheq.connectors.base import Connector
+from metricheq.evaluation.metric import Metric
 
 
-class Extractor(ABC):
+class Deducer(ABC):
     def __init__(self, connector: Connector, params: dict):
         self.connector = connector
         self.client = connector.client
         self.params = params
 
     @abstractmethod
-    def fetch_data(self):
+    def retrieve_data(self):
         pass
 
     @abstractmethod
@@ -21,8 +22,12 @@ class Extractor(ABC):
     def finalize(self, processed_data):
         pass
 
-    def perform(self):
+    def deduce(self):
         self.connector.ensure_connectivity()
-        data = self.fetch_data()
+        data = self.retrieve_data()
         processed_data = self.process_data(data)
         return self.finalize(processed_data)
+
+    @property
+    def metric(self):
+        return Metric(value=self.deduce())

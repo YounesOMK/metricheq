@@ -1,7 +1,7 @@
 from datetime import timedelta
 import unittest
 
-from metricheq.extractors.utils import (
+from metricheq.deducers.utils import (
     DurationFormat,
     FrequencyTimeUnit,
     calculate_frequency,
