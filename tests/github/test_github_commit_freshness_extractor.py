@@ -20,9 +20,9 @@ class TestGitHubLastCommitAgeDeducer(unittest.TestCase):
         }
         self.params_model = GitProviderLastCommitFreshnessParams(**self.params)
 
-        self.extractor = GitHubLastCommitAgeDeducer(self.mock_connector, self.params)
+        self.deducer = GitHubLastCommitAgeDeducer(self.mock_connector, self.params)
 
-    def test_fetch_data_successful(self):
+    def test_retrieve_data_successful(self):
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.json.return_value = {
@@ -30,21 +30,21 @@ class TestGitHubLastCommitAgeDeducer(unittest.TestCase):
         }
         self.mock_client.make_request.return_value = mock_response
 
-        result = self.extractor.retrieve_data()
+        result = self.deducer.retrieve_data()
         # TODO CHECK this later
         if result is not None:
             self.assertIn("commit", result)
         else:
-            self.fail("fetch_data returned None")
+            self.fail("retrieve_data returned None")
 
-    def test_fetch_data_failure(self):
+    def test_retrieve_data_failure(self):
         mock_response = Mock()
         mock_response.status_code = 404
         mock_response.raise_for_status.side_effect = Exception("404 Client Error")
         self.mock_client.make_request.return_value = mock_response
 
         with self.assertRaises(Exception):
-            self.extractor.retrieve_data()
+            self.deducer.retrieve_data()
 
     def test_process_data(self):
         commit_time_str = (
@@ -52,10 +52,10 @@ class TestGitHubLastCommitAgeDeducer(unittest.TestCase):
         ).isoformat()
         mock_data = {"commit": {"committer": {"date": commit_time_str}}}
 
-        result = self.extractor.process_data(mock_data)
+        result = self.deducer.process_data(mock_data)
         self.assertAlmostEqual(result, 30 * 60, delta=5)
 
     def test_finalize(self):
         time_elapsed_in_seconds = 1800
-        result = self.extractor.finalize(time_elapsed_in_seconds)
+        result = self.deducer.finalize(time_elapsed_in_seconds)
         self.assertEqual(result, 30)

@@ -25,7 +25,7 @@ class TestPagerDutyAverageIncidentResolutionTimeDeducer(unittest.TestCase):
         }
         self.params_model = PagerDutyAverageIncidentResolutionTimeParams(**self.params)
 
-        self.extractor = PagerDutyAverageIncidentResolutionTimeDeducer(
+        self.deducer = PagerDutyAverageIncidentResolutionTimeDeducer(
             self.mock_connector, self.params
         )
 
@@ -53,10 +53,10 @@ class TestPagerDutyAverageIncidentResolutionTimeDeducer(unittest.TestCase):
             datetime(2023, 1, 1, 1, 0, 0),
         ]
 
-        result = self.extractor.process_data(mock_data)
+        result = self.deducer.process_data(mock_data)
         self.assertEqual(result, 3600)
 
-    def test_fetch_data_successful(self):
+    def test_retrieve_data_successful(self):
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.json.return_value = {
@@ -70,12 +70,12 @@ class TestPagerDutyAverageIncidentResolutionTimeDeducer(unittest.TestCase):
         }
         self.mock_client.make_request.return_value = mock_response
 
-        result = self.extractor.retrieve_data()
+        result = self.deducer.retrieve_data()
         self.assertIsNotNone(result)
         if result is not None:
             self.assertIn("incidents", result)
 
-    def test_fetch_data_failure(self):
+    def test_retrieve_data_failure(self):
         mock_response = Mock()
         mock_response.status_code = 404
         mock_response.raise_for_status.side_effect = HTTPError("404 Client Error")
@@ -83,12 +83,12 @@ class TestPagerDutyAverageIncidentResolutionTimeDeducer(unittest.TestCase):
         self.mock_client.make_request.return_value = mock_response
 
         with self.assertRaises(HTTPError):
-            self.extractor.retrieve_data()
+            self.deducer.retrieve_data()
 
     def test_finalize(self):
         test_duration_in_seconds = 3600
-        self.extractor.params_model.format = DurationFormat.MINUTES
-        result = self.extractor.finalize(test_duration_in_seconds)
+        self.deducer.params_model.format = DurationFormat.MINUTES
+        result = self.deducer.finalize(test_duration_in_seconds)
         self.assertEqual(result, 60)
 
     def test_process_data_no_resolved_incidents(self):
@@ -101,9 +101,9 @@ class TestPagerDutyAverageIncidentResolutionTimeDeducer(unittest.TestCase):
                 }
             ]
         }
-        result = self.extractor.process_data(mock_data)
+        result = self.deducer.process_data(mock_data)
         self.assertIsNone(result)
 
     def test_finalize_with_none(self):
-        result = self.extractor.finalize(None)
+        result = self.deducer.finalize(None)
         self.assertIsNone(result)

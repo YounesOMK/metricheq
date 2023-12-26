@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from metricheq.connectors.git_providers.github import GitHubConnector
-from metricheq.extractors.base import Deducer
-from metricheq.extractors.utils import DurationFormat
+from metricheq.deducers.base import Deducer
+from metricheq.deducers.utils import DurationFormat
 from metricheq.connectors.base import Connector
 
 

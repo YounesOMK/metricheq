@@ -6,8 +6,8 @@ from dateutil.parser import parse
 from metricheq.connectors.base import Connector
 from metricheq.connectors.pager_duty import PagerDutyConnector
 
-from metricheq.extractors.base import Deducer
-from metricheq.extractors.utils import (
+from metricheq.deducers.base import Deducer
+from metricheq.deducers.utils import (
     DurationFormat,
     FrequencyTimeUnit,
     calculate_frequency,
@@ -124,7 +124,7 @@ class PagerDutyIncidentFrequencyDeducer(Deducer):
         params_model (PagerDutyIncidentFrequencyParams): Parameters for incident frequency extraction.
 
     Methods:
-        fetch_data: Retrieves incident data from PagerDuty.
+        retrieve_data: Retrieves incident data from PagerDuty.
         process_data: Processes the fetched data to count the number of incidents.
         finalize: Finalizes the data processing to calculate the incident frequency.
     """

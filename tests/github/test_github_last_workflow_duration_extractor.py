@@ -23,11 +23,11 @@ class TestGitHubLastWorkFlowDurationDeducer(unittest.TestCase):
         self.params = {"repo_name": "test_repo", "format": DurationFormat.MINUTES}
         self.params_model = GitProviderLastWorkflowDurationParams(**self.params)
 
-        self.extractor = GitHubLastWorkFlowDurationDeducer(
+        self.deducer = GitHubLastWorkFlowDurationDeducer(
             self.mock_connector, self.params
         )
 
-    def test_fetch_data_successful(self):
+    def test_retrieve_data_successful(self):
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.json.return_value = {
@@ -40,14 +40,14 @@ class TestGitHubLastWorkFlowDurationDeducer(unittest.TestCase):
         }
         self.mock_client.make_request.return_value = mock_response
 
-        result = self.extractor.retrieve_data()
+        result = self.deducer.retrieve_data()
         if result is not None:
             self.assertEqual(len(result), 1)
             self.assertIn("run_started_at", result[0])
         else:
-            self.fail("fetch_data returned None")
+            self.fail("retrieve_data returned None")
 
-    def test_fetch_data_failure(self):
+    def test_retrieve_data_failure(self):
         mock_response = Mock(spec=Response)
         mock_response.status_code = 404
         mock_response.raise_for_status.side_effect = HTTPError("404 Client Error")
@@ -55,7 +55,7 @@ class TestGitHubLastWorkFlowDurationDeducer(unittest.TestCase):
         self.mock_client.make_request.return_value = mock_response
 
         with self.assertRaises(HTTPError):
-            self.extractor.retrieve_data()
+            self.deducer.retrieve_data()
 
     def test_process_data(self):
         mock_data = [
@@ -69,10 +69,10 @@ class TestGitHubLastWorkFlowDurationDeducer(unittest.TestCase):
         end_time = datetime.fromisoformat("2023-01-01T01:00:00+00:00")
         expected_duration = (end_time - start_time).total_seconds()
 
-        result = self.extractor.process_data(mock_data)
+        result = self.deducer.process_data(mock_data)
         self.assertEqual(result, expected_duration)
 
     def test_finalize(self):
         test_duration_in_seconds = 3600
-        result = self.extractor.finalize(test_duration_in_seconds)
+        result = self.deducer.finalize(test_duration_in_seconds)
         self.assertEqual(result, 60)

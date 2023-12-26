@@ -1,10 +1,10 @@
 from datetime import datetime, timezone
-from metricheq.extractors.git_providers.base import (
+from metricheq.deducers.git_providers.base import (
     GitProviderFileExistenceDeducer,
     GitProviderLastCommitAgeDeducer,
     GitProviderLastWorkFlowDurationDeducer,
 )
-from metricheq.extractors.utils import convert_seconds
+from metricheq.deducers.utils import convert_seconds
 
 
 class GitHubFileExistenceDeducer(GitProviderFileExistenceDeducer):
