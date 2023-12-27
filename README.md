@@ -4,15 +4,22 @@
 
 This project currently offers 4 connectors:
 
-| Connector  | Deducer                                         | Description                                       |
-|------------|-------------------------------------------------|---------------------------------------------------|
-| Sonar      | SonarMeasureDeducer                             | Deduces metrics for coverage, bugs, vulnerabilities, code smells |
-| GitHub     | GitHubFileExistenceDeducer                      | Determines if a file exists in the repo           |
-|            | GitHubLastWorkFlowDurationDeducer               | Calculates duration of the last workflow          |
-|            | GitHubLastCommitAgeDeducer                      | Measures time since the last commit               |
-| PagerDuty  | PagerDutyIncidentFrequencyDeducer               | Deducer for frequency of incidents                |
-|            | PagerDutyAverageIncidentResolutionTimeDeducer   | Calculates average resolution time of incidents   |
-| Prometheus | PrometheusServiceAvailabilityDeducer            | determines the service uptime ratio over a specified period of time|
-
-
+✅ Completed \
+🚧 In progress
+    
+| Connector  | Deducer                                         | Description                                       | Status |
+|------------|-------------------------------------------------|---------------------------------------------------|:------:|
+| Sonar      | SonarMeasureDeducer                             | Deduces metrics for coverage, bugs, vulnerabilities, code smells | ✅ |
+| GitHub     | GitHubFileExistenceDeducer                      | Determines if a file exists in the repo           | ✅ |
+|            | GitHubLastWorkFlowDurationDeducer               | Calculates duration of the last workflow          | ✅ |
+|            | GitHubLastCommitAgeDeducer                      | Measures time since the last commit               | ✅ |
+|            | GitHubPRTimeToMergeDeducer                      | Measures avg pr time to merge                      | 🚧 |
+|            | GitHubIssueTimeToCloseDeducer                   | Measures  time taken to close issues                | 🚧 |
+| GitLab     |                                                 |                                                     | 🚧 |
+| BitBucket  |                                                 |                                                     | 🚧 |
+| PagerDuty  | PagerDutyIncidentFrequencyDeducer               | Deducer for frequency of incidents                | ✅ |
+|            | PagerDutyAverageIncidentResolutionTimeDeducer   | Calculates average resolution time of incidents   | ✅ |
+|            | PagerDutyIncidentTimeToAcknowledgeDeducer       | Calculates average time to acknowldge incidents   | 🚧 |
+| Prometheus | PrometheusServiceAvailabilityDeducer            | Determines the service uptime ratio over a specified period of time | ✅ |
+| Jenkins    |                                                 |                                                    | 🚧 |
 
