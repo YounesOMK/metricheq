@@ -12,7 +12,7 @@ This project currently offers 4 connectors:
 |            | GitHubLastCommitAgeDeducer                      | Measures time since the last commit               |
 | PagerDuty  | PagerDutyIncidentFrequencyDeducer               | Deducer for frequency of incidents                |
 |            | PagerDutyAverageIncidentResolutionTimeDeducer   | Calculates average resolution time of incidents   |
-| Prometheus | WIP                                             | WIP                                               |
+| Prometheus | PrometheusServiceAvailabilityDeducer            | determines the service uptime ratio over a specified period of time|
 
 
 
