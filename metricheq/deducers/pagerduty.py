@@ -4,7 +4,7 @@ from typing import Optional
 from pydantic import BaseModel
 from dateutil.parser import parse
 from metricheq.connectors.base import Connector
-from metricheq.connectors.pager_duty import PagerDutyConnector
+from metricheq.connectors.pagerduty import PagerDutyConnector
 
 from metricheq.deducers.base import Deducer
 from metricheq.deducers.utils import (
@@ -24,9 +24,9 @@ class IncidentUrgencyEnum(str, Enum):
     low = "low"
 
 
-class PagerDutyAverageIncidentResolutionTimeParams(BaseModel):
+class PagerDutyAVGIncidentResolutionTimeParams(BaseModel):
     """
-    Parameter model for configuring the PagerDutyAverageIncidentResolutionTimeDeducer.
+    Parameter model for configuring the PagerDutyAVGIncidentResolutionTimeDeducer.
 
     Attributes:
         service_id (str): The ID of the PagerDuty service to query.
@@ -53,7 +53,7 @@ class PagerDutyIncidentFrequencyParams(BaseModel):
     time_unit: FrequencyTimeUnit = FrequencyTimeUnit.DAILY
 
 
-class PagerDutyAverageIncidentResolutionTimeDeducer(Deducer):
+class PagerDutyAVGIncidentResolutionTimeDeducer(Deducer):
     """
     Deducer for calculating the average time to resolution of incidents in PagerDuty.
 
@@ -61,7 +61,7 @@ class PagerDutyAverageIncidentResolutionTimeDeducer(Deducer):
 
     Attributes:
         connector (Connector): A connector instance for making API requests to PagerDuty.
-        params_model (PagerDutyAverageIncidentResolutionTimeParams): Parameters for incident data extraction.
+        params_model (PagerDutyAVGIncidentResolutionTimeParams): Parameters for incident data extraction.
     """
 
     def __init__(self, connector: Connector, params: dict):
@@ -69,7 +69,7 @@ class PagerDutyAverageIncidentResolutionTimeDeducer(Deducer):
             raise TypeError(
                 "The provided connector is not a valid pager duty connector"
             )
-        self.params_model = PagerDutyAverageIncidentResolutionTimeParams(**params)
+        self.params_model = PagerDutyAVGIncidentResolutionTimeParams(**params)
         super().__init__(connector, params)
 
     def retrieve_data(self):

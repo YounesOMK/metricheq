@@ -3,15 +3,15 @@ import unittest
 from unittest.mock import Mock, patch
 from requests import HTTPError
 
-from metricheq.connectors.pager_duty import PagerDutyConnector
-from metricheq.deducers.pager_duty import (
-    PagerDutyAverageIncidentResolutionTimeDeducer,
-    PagerDutyAverageIncidentResolutionTimeParams,
+from metricheq.connectors.pagerduty import PagerDutyConnector
+from metricheq.deducers.pagerduty import (
+    PagerDutyAVGIncidentResolutionTimeDeducer,
+    PagerDutyAVGIncidentResolutionTimeParams,
 )
 from metricheq.deducers.utils import DurationFormat
 
 
-class TestPagerDutyAverageIncidentResolutionTimeDeducer(unittest.TestCase):
+class TestPagerDutyAVGIncidentResolutionTimeDeducer(unittest.TestCase):
     def setUp(self):
         self.mock_client = Mock()
         self.mock_connector = Mock(spec=PagerDutyConnector, client=self.mock_client)
@@ -23,18 +23,16 @@ class TestPagerDutyAverageIncidentResolutionTimeDeducer(unittest.TestCase):
             "since": datetime.utcnow() - timedelta(days=7),
             "until": datetime.utcnow(),
         }
-        self.params_model = PagerDutyAverageIncidentResolutionTimeParams(**self.params)
+        self.params_model = PagerDutyAVGIncidentResolutionTimeParams(**self.params)
 
-        self.deducer = PagerDutyAverageIncidentResolutionTimeDeducer(
+        self.deducer = PagerDutyAVGIncidentResolutionTimeDeducer(
             self.mock_connector, self.params
         )
 
     def test_init_with_invalid_connector(self):
         with self.assertRaises(TypeError):
             invalid_connector = Mock()
-            PagerDutyAverageIncidentResolutionTimeDeducer(
-                invalid_connector, self.params
-            )
+            PagerDutyAVGIncidentResolutionTimeDeducer(invalid_connector, self.params)
 
     @patch("dateutil.parser.parse")
     def test_process_data(self, mock_parse):
