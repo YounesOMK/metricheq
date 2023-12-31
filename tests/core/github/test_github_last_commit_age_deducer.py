@@ -7,7 +7,6 @@ from metricheq.core.deducers.git_providers.base import (
     GitProviderLastCommitFreshnessParams,
 )
 from metricheq.core.deducers.git_providers.github import GitHubLastCommitAgeDeducer
-from metricheq.core.deducers.utils import DurationFormat
 
 
 class TestGitHubLastCommitAgeDeducer(unittest.TestCase):
@@ -18,7 +17,7 @@ class TestGitHubLastCommitAgeDeducer(unittest.TestCase):
         self.params = {
             "repo_name": "test_repo",
             "branch_name": "main",
-            "format": DurationFormat.MINUTES,
+            "format": "minutes",
         }
         self.params_model = GitProviderLastCommitFreshnessParams(**self.params)
 

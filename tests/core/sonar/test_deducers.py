@@ -5,7 +5,6 @@ from metricheq.core.connectors.sonar import SonarClient, SonarConnector
 from metricheq.core.deducers.sonar import (
     SonarMeasureDeducer,
     SonarMeasureParams,
-    SonarMetricType,
 )
 
 
@@ -16,7 +15,7 @@ class TestSonarMeasureDeducer(unittest.TestCase):
 
         self.params = {
             "component": "example_component",
-            "metric_key": SonarMetricType.COVERAGE,
+            "metric_key": "coverage",
         }
         self.params_model = SonarMeasureParams(**self.params)
 

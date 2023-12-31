@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import unittest
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 from requests import HTTPError
 
@@ -66,13 +66,10 @@ class TestPrometheusServiceAvailabilityDeducer(unittest.TestCase):
         self.assertEqual(result, processed_data)
 
     def test_deduce_integration(self):
-        mock_retrieve_data = Mock(return_value={"data": {"result": []}})
-        mock_process_data = Mock(return_value=100.0)
-        mock_finalize = Mock(return_value=100.0)
-
-        self.deducer.retrieve_data = mock_retrieve_data
-        self.deducer.process_data = mock_process_data
-        self.deducer.finalize = mock_finalize
-
-        result = self.deducer.deduce()
-        self.assertEqual(result, 100.0)
+        with patch.object(
+            self.deducer, "retrieve_data", return_value={"data": {"result": []}}
+        ), patch.object(self.deducer, "process_data", return_value=100.0), patch.object(
+            self.deducer, "finalize", return_value=100.0
+        ):
+            result = self.deducer.deduce()
+            self.assertEqual(result, 100.0)

@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 from metricheq.core.connectors.git_providers.github import GitHubConnector
 from metricheq.core.deducers.base import Deducer
-from metricheq.core.deducers.utils import DurationFormat
 from metricheq.core.connectors.base import Connector
 
 
@@ -12,13 +11,13 @@ class GitProviderFileExistsParams(BaseModel):
 
 class GitProviderLastWorkflowDurationParams(BaseModel):
     repo_name: str
-    format: DurationFormat = DurationFormat.SECONDS
+    format: str = "seconds"
 
 
 class GitProviderLastCommitFreshnessParams(BaseModel):
     repo_name: str
     branch_name: str
-    format: DurationFormat = DurationFormat.SECONDS
+    format: str = "seconds"
 
 
 class GitProviderFileExistenceDeducer(Deducer):

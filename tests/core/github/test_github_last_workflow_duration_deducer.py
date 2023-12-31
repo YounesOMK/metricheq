@@ -12,7 +12,6 @@ from metricheq.core.deducers.git_providers.base import (
 from metricheq.core.deducers.git_providers.github import (
     GitHubLastWorkFlowDurationDeducer,
 )
-from metricheq.core.deducers.utils import DurationFormat
 
 
 class TestGitHubLastWorkFlowDurationDeducer(unittest.TestCase):
@@ -20,7 +19,7 @@ class TestGitHubLastWorkFlowDurationDeducer(unittest.TestCase):
         self.mock_client = Mock(spec=GitHubClient)
         self.mock_connector = Mock(spec=GitHubConnector, client=self.mock_client)
 
-        self.params = {"repo_name": "test_repo", "format": DurationFormat.MINUTES}
+        self.params = {"repo_name": "test_repo", "format": "minutes"}
         self.params_model = GitProviderLastWorkflowDurationParams(**self.params)
 
         self.deducer = GitHubLastWorkFlowDurationDeducer(

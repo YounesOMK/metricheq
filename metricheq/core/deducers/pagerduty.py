@@ -1,27 +1,18 @@
 from datetime import datetime, timezone
-from enum import Enum
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from dateutil.parser import parse
 from metricheq.core.connectors.base import Connector
 from metricheq.core.connectors.pagerduty import PagerDutyConnector
 
 from metricheq.core.deducers.base import Deducer
 from metricheq.core.deducers.utils import (
-    DurationFormat,
-    FrequencyTimeUnit,
     calculate_frequency,
     convert_seconds,
 )
 
 
-class IncidentUrgencyEnum(str, Enum):
-    """
-    Enum for defining incident urgency levels in PagerDuty.
-    """
-
-    high = "high"
-    low = "low"
+INCIDENT_URGENCY_ALLOWED_VALUES = {"high", "low"}
 
 
 class PagerDutyAVGIncidentResolutionTimeParams(BaseModel):
@@ -37,20 +28,36 @@ class PagerDutyAVGIncidentResolutionTimeParams(BaseModel):
     """
 
     service_id: str
-    incident_urgency: IncidentUrgencyEnum
+    incident_urgency: str
     since: Optional[datetime] = None
     until: Optional[datetime] = None
 
-    format: DurationFormat = DurationFormat.SECONDS
+    format: str = "seconds"
+
+    @validator("incident_urgency")
+    def validate_incident_urgency(cls, v):
+        if v not in INCIDENT_URGENCY_ALLOWED_VALUES:
+            raise ValueError(
+                f"Invalid incident_urgency: {v}. Must be one of {INCIDENT_URGENCY_ALLOWED_VALUES}"
+            )
+        return v
 
 
 class PagerDutyIncidentFrequencyParams(BaseModel):
     service_id: str
-    incident_urgency: Optional[IncidentUrgencyEnum] = None
+    incident_urgency: Optional[str] = None
     since: Optional[datetime] = None
     until: Optional[datetime] = None
 
-    time_unit: FrequencyTimeUnit = FrequencyTimeUnit.DAILY
+    time_unit: str = "daily"
+
+    @validator("incident_urgency")
+    def validate_incident_urgency(cls, v):
+        if v not in INCIDENT_URGENCY_ALLOWED_VALUES:
+            raise ValueError(
+                f"Invalid incident_urgency: {v}. Must be one of {INCIDENT_URGENCY_ALLOWED_VALUES}"
+            )
+        return v
 
 
 class PagerDutyAVGIncidentResolutionTimeDeducer(Deducer):
@@ -64,7 +71,7 @@ class PagerDutyAVGIncidentResolutionTimeDeducer(Deducer):
         params_model (PagerDutyAVGIncidentResolutionTimeParams): Parameters for incident data extraction.
     """
 
-    def __init__(self, connector: Connector, params: dict):
+    def __init__(self, connector: Connector, params):
         if not isinstance(connector, PagerDutyConnector):
             raise TypeError(
                 "The provided connector is not a valid pager duty connector"
@@ -73,7 +80,7 @@ class PagerDutyAVGIncidentResolutionTimeDeducer(Deducer):
         super().__init__(connector, params)
 
     def retrieve_data(self):
-        endpoint = f"/incidents?service_ids[]={self.params_model.service_id}&urgencies[]={self.params_model.incident_urgency.value}"
+        endpoint = f"/incidents?service_ids[]={self.params_model.service_id}&urgencies[]={self.params_model.incident_urgency}"
 
         if self.params_model.since:
             endpoint += f"&since={self.params_model.since.isoformat()}"
@@ -89,7 +96,7 @@ class PagerDutyAVGIncidentResolutionTimeDeducer(Deducer):
 
     def process_data(self, data):
         incidents = data.get("incidents", [])
-        total_time_to_resolution = 0
+        total_time_to_resolution = float(0)
         count = 0
         for incident in incidents:
             if incident["status"] == "resolved":
@@ -139,7 +146,7 @@ class PagerDutyIncidentFrequencyDeducer(Deducer):
         endpoint = f"/incidents?service_ids[]={self.params_model.service_id}"
 
         if self.params_model.incident_urgency:
-            endpoint += f"&urgencies[]={self.params_model.incident_urgency.value}"
+            endpoint += f"&urgencies[]={self.params_model.incident_urgency}"
 
         if self.params_model.since:
             endpoint += f"&since={self.params_model.since.isoformat()}"

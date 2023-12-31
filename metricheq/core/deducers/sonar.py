@@ -1,21 +1,24 @@
-from enum import Enum
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from metricheq.core.connectors.base import Connector
 from metricheq.core.connectors.sonar import SonarConnector
 
 from metricheq.core.deducers.base import Deducer
 
 
-class SonarMetricType(str, Enum):
-    COVERAGE = "coverage"
-    BUGS = "bugs"
-    VULNERABILITIES = "vulnerabilities"
-    CODE_SMELLS = "code_smells"
+ALLOWED_METRIC_KEYS = {"coverage", "bugs", "vulnerabilities", "code_smells"}
 
 
 class SonarMeasureParams(BaseModel):
     component: str
-    metric_key: SonarMetricType
+    metric_key: str
+
+    @validator("metric_key")
+    def validate_metric_key(cls, v):
+        if v not in ALLOWED_METRIC_KEYS:
+            raise ValueError(
+                f"Invalid metric_key: {v}. Must be one of {ALLOWED_METRIC_KEYS}"
+            )
+        return v
 
 
 class SonarMeasureDeducer(Deducer):

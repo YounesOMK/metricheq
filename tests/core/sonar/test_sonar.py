@@ -1,3 +1,4 @@
+from typing import cast
 import unittest
 from unittest.mock import Mock, patch
 
@@ -7,12 +8,13 @@ from metricheq.core.connectors.base import (
     UserPasswordBasicAuthenticator,
 )
 from metricheq.core.connectors.sonar import (
+    SonarBaseConfig,
     SonarClient,
     SonarConnector,
     SonarTokenConfig,
     SonarUserPasswordConfig,
 )
-from metricheq.exceptions.exceptions import UnsupportedConfigurationError
+from metricheq.exceptions.core.exceptions import UnsupportedConfigurationError
 
 
 class TestSonarClient(unittest.TestCase):
@@ -35,7 +37,7 @@ class TestSonarClient(unittest.TestCase):
 
     def test_with_unsupported_config(self):
         with self.assertRaises(UnsupportedConfigurationError):
-            SonarClient({})
+            SonarClient(cast(SonarBaseConfig, {}))
 
     @patch("requests.Session.send")
     def test_make_request_success(self, mock_send):
@@ -54,7 +56,8 @@ class TestSonarClient(unittest.TestCase):
 class TestSonarConnector(unittest.TestCase):
     @patch("metricheq.core.connectors.sonar.SonarClient")
     def test_connector_initialization(self, mock_client):
-        connector = SonarConnector.from_config({})
+        config = SonarBaseConfig(host_url="https://example.com")
+        connector = SonarConnector.from_config(config)
         self.assertIsInstance(connector, SonarConnector)
 
     @patch("metricheq.core.connectors.sonar.SonarClient")

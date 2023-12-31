@@ -1,6 +1,7 @@
 from typing import Optional
 import requests
 from metricheq.core.connectors.base import (
+    Authenticator,
     BearerTokenAuthenticator,
     UserPasswordBasicAuthenticator,
     Client,
@@ -8,7 +9,7 @@ from metricheq.core.connectors.base import (
 )
 from pydantic import BaseModel
 
-from metricheq.exceptions.exceptions import UnsupportedConfigurationError
+from metricheq.exceptions.core.exceptions import UnsupportedConfigurationError
 
 
 class SonarBaseConfig(BaseModel):
@@ -26,7 +27,8 @@ class SonarUserPasswordConfig(SonarBaseConfig):
 
 
 class SonarClient(Client):
-    def __init__(self, config):
+    def __init__(self, config: SonarBaseConfig):
+        self.authenticator: Authenticator
         if isinstance(config, SonarTokenConfig):
             self.authenticator = BearerTokenAuthenticator(config.user_token)
         elif isinstance(config, SonarUserPasswordConfig):
@@ -55,7 +57,7 @@ class SonarConnector(Connector):
         super().__init__(client)
 
     @staticmethod
-    def from_config(config):
+    def from_config(config: SonarBaseConfig):
         return SonarConnector(client=SonarClient(config))
 
     def ensure_connectivity(self):

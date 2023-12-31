@@ -1,34 +1,18 @@
 from datetime import timedelta
-from enum import Enum
 
 
-class DurationFormat(str, Enum):
-    SECONDS = "seconds"
-    MINUTES = "minutes"
-    HOURS = "hours"
-    DAYS = "days"
-
-
-class FrequencyTimeUnit(str, Enum):
-    DAILY = "daily"
-    WEEKLY = "weekly"
-    MONTHLY = "monthly"
-
-
-def convert_seconds(duration_in_seconds, format: DurationFormat):
-    if format == DurationFormat.SECONDS:
+def convert_seconds(duration_in_seconds, format: str):
+    if format == "seconds":
         return duration_in_seconds
-    elif format == DurationFormat.MINUTES:
+    elif format == "minutes":
         return duration_in_seconds / 60
-    elif format == DurationFormat.HOURS:
+    elif format == "hours":
         return duration_in_seconds / 3600
     else:
         raise ValueError("Invalid duration format")
 
 
-def calculate_frequency(
-    total_events: int, time_delta: timedelta, time_unit: FrequencyTimeUnit
-):
+def calculate_frequency(total_events: int, time_delta: timedelta, time_unit: str):
     """
     Calculates the frequency of events based on a given time unit.
 
@@ -43,13 +27,15 @@ def calculate_frequency(
     Returns:
         float: The frequency of events per the specified time unit.
     """
-    if time_unit == FrequencyTimeUnit.DAILY:
+    if time_unit == "daily":
         days = time_delta.days or 1
         return total_events / days
-    elif time_unit == FrequencyTimeUnit.WEEKLY:
+    elif time_unit == "weekly":
         weeks = max(time_delta.days / 7, 1)
         return total_events / weeks
-    elif time_unit == FrequencyTimeUnit.MONTHLY:
+    elif time_unit == "monthly":
         # approximation
         months = max(time_delta.days / 30, 1)
         return total_events / months
+    else:
+        raise ValueError("Invalid time unit format")

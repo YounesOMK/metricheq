@@ -7,7 +7,7 @@ from metricheq.core.connectors.base import (
     Connector,
     UserPasswordBasicAuthenticator,
 )
-from metricheq.exceptions.exceptions import UnsupportedConfigurationError
+from metricheq.exceptions.core.exceptions import UnsupportedConfigurationError
 
 
 class PrometheusConfig(BaseModel):

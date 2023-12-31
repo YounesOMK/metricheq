@@ -6,10 +6,8 @@ from requests import HTTPError
 
 from metricheq.core.connectors.pagerduty import PagerDutyConnector
 from metricheq.core.deducers.pagerduty import (
-    IncidentUrgencyEnum,
     PagerDutyIncidentFrequencyDeducer,
 )
-from metricheq.core.deducers.utils import FrequencyTimeUnit
 
 
 class TestPagerDutyIncidentFrequencyDeducer(unittest.TestCase):
@@ -19,10 +17,10 @@ class TestPagerDutyIncidentFrequencyDeducer(unittest.TestCase):
 
         self.params = {
             "service_id": "example_service_id",
-            "incident_urgency": IncidentUrgencyEnum.high,
+            "incident_urgency": "high",
             "since": datetime.now(timezone.utc) - timedelta(days=7),
             "until": datetime.now(timezone.utc),
-            "time_unit": FrequencyTimeUnit.DAILY,
+            "time_unit": "daily",
         }
 
         self.deducer = PagerDutyIncidentFrequencyDeducer(

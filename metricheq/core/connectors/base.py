@@ -1,10 +1,12 @@
 from abc import ABC, abstractmethod
 import base64
 
+from requests import Request
+
 
 class Authenticator(ABC):
     @abstractmethod
-    def apply(self, request):
+    def apply(self, request) -> Request:
         pass
 
 

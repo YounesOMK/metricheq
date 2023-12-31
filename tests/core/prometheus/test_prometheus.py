@@ -9,7 +9,7 @@ from metricheq.core.connectors.prometheus import (
     PrometheusConnector,
     PrometheusUserPasswordConfig,
 )
-from metricheq.exceptions.exceptions import UnsupportedConfigurationError
+from metricheq.exceptions.core.exceptions import UnsupportedConfigurationError
 
 
 class TestPrometheusClient(unittest.TestCase):

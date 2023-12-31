@@ -8,7 +8,6 @@ from metricheq.core.deducers.pagerduty import (
     PagerDutyAVGIncidentResolutionTimeDeducer,
     PagerDutyAVGIncidentResolutionTimeParams,
 )
-from metricheq.core.deducers.utils import DurationFormat
 
 
 class TestPagerDutyAVGIncidentResolutionTimeDeducer(unittest.TestCase):
@@ -16,12 +15,12 @@ class TestPagerDutyAVGIncidentResolutionTimeDeducer(unittest.TestCase):
         self.mock_client = Mock()
         self.mock_connector = Mock(spec=PagerDutyConnector, client=self.mock_client)
 
-        self.params = {
+        self.params: dict = {
             "service_id": "P8WTODX",
             "incident_urgency": "high",
-            "format": DurationFormat.SECONDS,
             "since": datetime.utcnow() - timedelta(days=7),
             "until": datetime.utcnow(),
+            "format": "seconds",
         }
         self.params_model = PagerDutyAVGIncidentResolutionTimeParams(**self.params)
 
@@ -85,7 +84,7 @@ class TestPagerDutyAVGIncidentResolutionTimeDeducer(unittest.TestCase):
 
     def test_finalize(self):
         test_duration_in_seconds = 3600
-        self.deducer.params_model.format = DurationFormat.MINUTES
+        self.deducer.params_model.format = "minutes"
         result = self.deducer.finalize(test_duration_in_seconds)
         self.assertEqual(result, 60)
 
