@@ -13,7 +13,7 @@ python-dateutil = "^2.8.2"
 
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.1.8"
+ruff = "^0.1.9"
 mypy = "^1.8.0"
 coverage = "^7.4.0"
 
