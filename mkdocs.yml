@@ -1,0 +1,10 @@
+site_name: Metricheq
+theme:
+  name: material
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          rendering:
+            show_source: true

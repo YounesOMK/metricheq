@@ -10,6 +10,9 @@ python = "^3.10"
 requests = "^2.31.0"
 pydantic = "^2.5.2"
 python-dateutil = "^2.8.2"
+mkdocs = "^1.5.3"
+mkdocstrings = "^0.24.0"
+mkdocs-material = "^9.5.3"
 
 
 [tool.poetry.group.dev.dependencies]
