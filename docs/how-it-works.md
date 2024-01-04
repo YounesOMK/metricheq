@@ -1,6 +1,6 @@
-# Overview of the Package
+# How it works
 
-This package facilitates the extraction and evaluation of metrics from various sources. It consists of connectors for establishing connections and deducers for data handling and metric extraction. The deduced metrics are either boolean values or numerical.
+Metricheq consists of connectors for establishing connections and deducers for data handling and metric extraction. The deduced metrics are either boolean values or numerical.
 
 ## Components
 
