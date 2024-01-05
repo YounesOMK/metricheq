@@ -11,4 +11,10 @@ markdown_extensions:
   - pymdownx.superfences
 plugins:
   - search
-
+nav:
+  - Home: index.md
+  - Connectors:
+      - GitHub: connectors/github.md
+      - Pagerduty: connectors/pagerduty.md
+      - Sonar: connectors/sonar.md
+      - Prometheus: connectors/prometheus.md

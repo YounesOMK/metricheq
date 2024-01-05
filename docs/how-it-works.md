@@ -42,8 +42,6 @@ Metricheq consists of connectors for establishing connections and deducers for d
 
 ## Process Flow
 
-## Process Flow
-
 1. **Authentication:** Selection and instantiation of an `Authenticator` based on the required authentication method.
 2. **Connection Establishment:** Creation and utilization of a `Connector` with a `Client` to ensure connectivity.
 3. **Data Extraction and Processing:** Initialization of a `Deducer` to manage data retrieval, processing, and finalizing.
