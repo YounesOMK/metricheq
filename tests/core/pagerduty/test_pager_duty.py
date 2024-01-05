@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 from requests import RequestException
-from metricheq.core.connectors.base import TokenAuthenticator
+from metricheq.core.authenticators import TokenAuthenticator
 
 from metricheq.core.connectors.pagerduty import (
     PagerDutyClient,

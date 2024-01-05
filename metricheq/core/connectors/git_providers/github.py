@@ -1,7 +1,8 @@
 from pydantic import BaseModel
 import requests
+from metricheq.core.authenticators import BearerTokenAuthenticator
 
-from metricheq.core.connectors.base import BearerTokenAuthenticator, Client, Connector
+from metricheq.core.connectors.base import Client, Connector
 
 
 class GitHubConfig(BaseModel):

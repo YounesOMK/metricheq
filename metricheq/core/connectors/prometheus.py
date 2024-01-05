@@ -1,11 +1,11 @@
 from pydantic import BaseModel
 import requests
 from requests import RequestException
+from metricheq.core.authenticators import UserPasswordBasicAuthenticator
 
 from metricheq.core.connectors.base import (
     Client,
     Connector,
-    UserPasswordBasicAuthenticator,
 )
 from metricheq.exceptions.core.exceptions import UnsupportedConfigurationError
 
