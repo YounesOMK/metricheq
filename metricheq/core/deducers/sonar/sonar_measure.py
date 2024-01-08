@@ -1,7 +1,7 @@
 from pydantic import BaseModel, validator
+
 from metricheq.core.connectors.base import Connector
 from metricheq.core.connectors.sonar import SonarConnector
-
 from metricheq.core.deducers.base import Deducer
 
 

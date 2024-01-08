@@ -1,9 +1,11 @@
 from typing import Optional
 import requests
-from metricheq.core.connectors.base import (
+from metricheq.core.authenticators import (
     Authenticator,
     BearerTokenAuthenticator,
     UserPasswordBasicAuthenticator,
+)
+from metricheq.core.connectors.base import (
     Client,
     Connector,
 )

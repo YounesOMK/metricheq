@@ -1,10 +1,10 @@
 from pydantic import BaseModel
 import requests
 from requests import RequestException
+from metricheq.core.authenticators import TokenAuthenticator
 from metricheq.core.connectors.base import (
     Client,
     Connector,
-    TokenAuthenticator,
 )
 
 

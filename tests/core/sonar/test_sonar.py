@@ -3,10 +3,11 @@ import unittest
 from unittest.mock import Mock, patch
 
 import requests
-from metricheq.core.connectors.base import (
+from metricheq.core.authenticators import (
     BearerTokenAuthenticator,
     UserPasswordBasicAuthenticator,
 )
+
 from metricheq.core.connectors.sonar import (
     SonarBaseConfig,
     SonarClient,
