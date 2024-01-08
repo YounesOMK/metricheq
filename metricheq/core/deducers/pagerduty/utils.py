@@ -1,0 +1,1 @@
+INCIDENT_URGENCY_ALLOWED_VALUES = {"high", "low"}

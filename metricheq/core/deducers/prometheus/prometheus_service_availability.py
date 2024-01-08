@@ -1,13 +1,12 @@
 from datetime import datetime
+from urllib.parse import quote
+
 from typing import Optional
 from pydantic import BaseModel
 from metricheq.core.connectors.base import Connector
 from metricheq.core.connectors.prometheus import PrometheusConnector
-from urllib.parse import quote
 
 from metricheq.core.deducers.base import Deducer
-
-# TODO: provide default value for step based on start, end date and points
 
 
 class PrometheusServiceAvailabilityParams(BaseModel):
