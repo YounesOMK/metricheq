@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 from requests import RequestException
+from metricheq.core.authenticators import NoAuthAuthenticator
 
 from metricheq.core.connectors.prometheus import (
     PrometheusClient,
@@ -16,7 +17,8 @@ class TestPrometheusClient(unittest.TestCase):
     def test_init_with_base_config(self):
         config = PrometheusConfig(host_url="http://example.com")
         client = PrometheusClient(config)
-        self.assertIsNone(client.authenticator)
+        self.assertIsNotNone(client.authenticator)
+        self.assertIsInstance(client.authenticator, NoAuthAuthenticator)
 
     def test_init_with_user_password_config(self):
         user_password_config = PrometheusUserPasswordConfig(
