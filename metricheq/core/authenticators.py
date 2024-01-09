@@ -38,3 +38,8 @@ class UserPasswordBasicAuthenticator(Authenticator):
         encoded_credentials = base64.b64encode(credentials.encode()).decode()
         request.headers["Authorization"] = f"Basic {encoded_credentials}"
         return request
+
+
+class NoAuthAuthenticator(Authenticator):
+    def apply(self, request) -> Request:
+        return request

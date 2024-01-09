@@ -1,7 +1,11 @@
 from pydantic import BaseModel
 import requests
 from requests import RequestException
-from metricheq.core.authenticators import UserPasswordBasicAuthenticator
+from metricheq.core.authenticators import (
+    Authenticator,
+    NoAuthAuthenticator,
+    UserPasswordBasicAuthenticator,
+)
 
 from metricheq.core.connectors.base import (
     Client,
@@ -26,7 +30,7 @@ class PrometheusClient(Client):
 
         super().__init__(config)
         self.base_url = config.host_url
-        self.authenticator = None
+        self.authenticator: Authenticator = NoAuthAuthenticator()
 
         if isinstance(config, PrometheusUserPasswordConfig):
             self.authenticator = UserPasswordBasicAuthenticator(
@@ -37,10 +41,7 @@ class PrometheusClient(Client):
         full_url = f"{self.base_url}/api/v1/{endpoint}"
         request = requests.Request(method, full_url, **kwargs)
 
-        if self.authenticator:
-            prepared_request = self.authenticator.apply(request)
-        else:
-            prepared_request = request
+        prepared_request = self.authenticator.apply(request)
 
         with requests.Session() as session:
             response = session.send(prepared_request.prepare())
