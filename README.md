@@ -1,5 +1,5 @@
 # metricheq
-A code-based tool for gathering key metrics 🔑 from multiple services
+A code-based tool for gathering key metrics 🔑 from multiple services.
 
 [![codecov](https://codecov.io/gh/YounesOMK/metricheq/graph/badge.svg?token=UCFOOO5F69)](https://codecov.io/gh/YounesOMK/metricheq)
 [![ci](https://github.com/YounesOMK/metricheq/actions/workflows/ci.yml/badge.svg)](https://github.com/YounesOMK/metricheq/actions/workflows/ci.yml)
