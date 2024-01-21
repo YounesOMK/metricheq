@@ -1,4 +1,4 @@
-# metricheq
+# metricheq.
 A code-based tool for gathering key metrics 🔑 from multiple services.
 
 [![codecov](https://codecov.io/gh/YounesOMK/metricheq/graph/badge.svg?token=UCFOOO5F69)](https://codecov.io/gh/YounesOMK/metricheq)
